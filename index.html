@@ -11,7 +11,7 @@
   <style>
     :root{
       --bg:#06040a;
-      --accent:#ff5c8a;   /* romantic pink */
+      --accent:#ff5c8a; 
       --muted:#bdb6c4;
       --glass: rgba(255,255,255,0.04);
     }
@@ -24,8 +24,6 @@
                   var(--bg);
       color: #efe9f2;
       font-family: 'Quicksand', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
       overflow:hidden;
       display:flex;
       align-items:center;
@@ -50,23 +48,8 @@
       gap:20px;
     }
 
-    /* top glow / stars */
-    .scene {
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-    }
+    .hearts { position:absolute; inset:0; overflow:hidden; z-index:2; pointer-events:none; }
 
-    /* floating hearts container */
-    .hearts {
-      position:absolute;
-      inset:0;
-      overflow:hidden;
-      z-index:2;
-      pointer-events:none;
-    }
-
-    /* center intro text */
     .intro{
       text-align:center;
       z-index:5;
@@ -93,11 +76,8 @@
       animation:fadeInUp 1s ease forwards 0.9s;
     }
 
-    @keyframes fadeInUp{
-      to{ opacity:1; transform:none; }
-    }
+    @keyframes fadeInUp{ to{ opacity:1; transform:none; } }
 
-    /* name animated line */
     .name-line{
       margin-top:14px;
       font-size:clamp(20px,3vw,28px);
@@ -110,11 +90,8 @@
       text-shadow: 0 6px 18px rgba(255,92,138,0.06);
       font-family: 'Playfair Display', serif;
     }
-    @keyframes popIn{
-      to{ opacity:1; transform:none; }
-    }
+    @keyframes popIn{ to{ opacity:1; transform:none; } }
 
-    /* reveal button */
     .reveal-btn{
       margin-top:18px;
       z-index:6;
@@ -127,78 +104,46 @@
       font-weight:600;
       letter-spacing:0.6px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-      transition: transform .18s ease, box-shadow .18s ease;
       backdrop-filter: blur(6px);
+      transition: transform .18s ease, box-shadow .18s ease;
     }
     .reveal-btn:hover{ transform:translateY(-4px) scale(1.01); box-shadow:0 18px 40px rgba(0,0,0,0.6); }
 
-    /* final message modal */
-    .modal{
-      position: absolute;
-      z-index:9;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-      backdrop-filter: blur(6px);
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .35s ease;
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
     }
-    .modal.show{
-      opacity:1;
-      pointer-events:auto;
+    .buttons button {
+      font-size: 20px;
+      padding: 12px 25px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    .modal-card{
-      width:100%;
-      max-width:760px;
-      margin:24px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:16px;
-      padding:32px;
+    .yes { background: #ff4d6d; color:white; }
+    .no { background: lightgray; color:black; position: relative; }
+
+    #loveMessage { display:none; text-align:center; }
+    #resultMessage {
+      display:none;
+      font-size:26px;
+      margin-top:30px;
+      color:#ff4d6d;
       text-align:center;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
-      position:relative;
-    }
-    .modal-card h2{
-      margin:0;
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(26px,3.4vw,40px);
-      color: #fff;
-    }
-    .modal-card p{
-      color:var(--muted);
-      margin:14px 0 18px 0;
-      font-size:18px;
-    }
-    .modal-card .big{
-      display:block;
-      margin-top:8px;
-      font-size:clamp(30px,4.2vw,44px);
-      color:var(--accent);
-      font-weight:700;
-    }
-    .close-btn{
-      margin-top:16px;
-      padding:10px 18px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.06);
-      background:transparent;
-      color:#fff;
-      cursor:pointer;
     }
 
-    /* music control */
+    /* Floating hearts and ring */
+    .heart { position:absolute; font-size:24px; animation: floatHearts 3s linear forwards; }
+    @keyframes floatHearts { 0% { transform: translateY(0) scale(1); opacity:1; } 100% { transform: translateY(-200px) scale(1.5); opacity:0; } }
+
+    .ring { font-size:60px; margin-top:25px; animation: pop 0.8s ease-out forwards; opacity:0; }
+    @keyframes pop { 0% { transform: scale(0); opacity:0; } 60% { transform: scale(1.3); opacity:1; } 100% { transform: scale(1); opacity:1; } }
+
     .music-control{
-      position:absolute;
-      right:18px;
-      top:18px;
-      z-index:8;
-      display:flex;
-      gap:8px;
-      align-items:center;
-      font-size:14px;
+      position:absolute; right:18px; top:18px; z-index:8; display:flex; gap:8px; align-items:center; font-size:14px;
     }
     .music-btn{
       padding:8px 12px;
@@ -208,212 +153,86 @@
       color:#fff;
       cursor:pointer;
     }
-
-    /* little footer */
-    .footer{
-      position:absolute;
-      bottom:14px;
-      left:18px;
-      font-size:12px;
-      color:rgba(255,255,255,0.5);
-      z-index:6;
-    }
-
-    /* hearts shapes (CSS used as a sprite fallback) */
-    .heart {
-      position:absolute;
-      width:18px;
-      height:18px;
-      transform:translate(-50%,-50%) scale(0.9);
-      pointer-events:none;
-      opacity:0.95;
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35));
-    }
-    .heart svg{display:block;}
-
-    /* responsive */
-    @media (max-width:520px){
-      .card{ padding:20px; min-height:520px; }
-      .music-control{ top:12px; right:12px; }
-    }
   </style>
 </head>
 <body>
-  <div class="card" role="main" aria-labelledby="title">
-    <div class="scene" aria-hidden="true">
-      <!-- subtle decorative gradient circles or stars could go here -->
-    </div>
-
+  <div class="card">
     <div class="hearts" id="hearts"></div>
 
-    <div class="music-control" aria-hidden="false">
-      <button id="playBtn" class="music-btn" title="Play music">Play Music ▶</button>
-      <button id="muteBtn" class="music-btn" title="Mute / Unmute">Mute</button>
+    <div class="music-control">
+      <button id="playBtn" class="music-btn">Play Music ▶</button>
+      <button id="muteBtn" class="music-btn">Mute</button>
     </div>
 
-    <div class="intro" id="intro">
-      <h1 id="title">Hi <span class="name-line">Hasi</span>…</h1>
+    <div class="intro">
+      <h1>Hi <span class="name-line">Hasi</span>…</h1>
       <p>I made this just for you. There's something I really want to say.</p>
-      <button class="reveal-btn" id="revealBtn" aria-controls="finalModal">Click to see my love message</button>
     </div>
 
-    <div class="footer">Made with ❤️ — a surprise for Hasi</div>
+    <button id="revealBtn" class="reveal-btn">Click to see my love message 💌</button>
 
-    <!-- Modal / final message -->
-    <div class="modal" id="finalModal" role="dialog" aria-modal="true" aria-hidden="true">
-      <div class="modal-card">
-        <h2>Hasi,</h2>
-        <p>From the deepest corner of my heart:</p>
-        <span class="big">“Hasi, I love you with all my heart. Will you be mine forever?”</span>
-
-        <div style="margin-top:18px;">
-          <button class="close-btn" id="closeModal">Close</button>
-        </div>
+    <div id="loveMessage">
+      <p style="font-size:22px; font-weight:600; color:#fff;">Hasi, I love you with all my heart. Will you be mine forever?</p>
+      <div class="buttons">
+        <button id="yesBtn" class="yes">Yes ❤️</button>
+        <button id="noBtn" class="no">No 😢</button>
       </div>
+      <div id="resultMessage"></div>
     </div>
 
-    <!-- Hidden audio element. Replace guitar.mp3 with your audio file in the repo root if you have one -->
     <audio id="bgAudio" loop preload="auto">
       <source src="guitar.mp3" type="audio/mpeg">
-      <!-- If you don't add an audio file, the control buttons will still work but nothing will play -->
     </audio>
   </div>
 
-  <!-- Heart SVG template (used by JS) -->
-  <template id="heartTemplate">
-    <div class="heart">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M12 21s-7.5-4.35-9.5-7.5C-0.5 8.5 4 3 8.5 5.5 10.8 6.9 12 9 12 9s1.2-2.1 3.5-3.5C20 3 24.5 8.5 21.5 13.5 19.5 16.65 12 21 12 21z" fill="url(#g)"/>
-        <defs>
-          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#ff8fb0"/>
-            <stop offset="1" stop-color="#ff4a7a"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-  </template>
-
   <script>
-    // ====== Floating hearts generator ======
-    const heartsContainer = document.getElementById('hearts');
-    const heartTpl = document.getElementById('heartTemplate').content;
+    const revealBtn = document.getElementById("revealBtn");
+    const loveMessage = document.getElementById("loveMessage");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const resultMessage = document.getElementById("resultMessage");
 
-    function spawnHeart() {
-      const node = heartTpl.cloneNode(true).querySelector('.heart');
-      const startX = Math.random() * 100; // vw
-      const size = 12 + Math.random() * 26; // px
-      node.style.left = startX + 'vw';
-      node.style.bottom = '-40px';
-      node.style.width = size + 'px';
-      node.style.height = size + 'px';
-      node.style.opacity = 0.9 - Math.random()*0.6;
-      heartsContainer.appendChild(node);
-
-      // animation using Web Animations API
-      const travel = 550 + Math.random()*450; // px travel
-      const drift = (Math.random() - 0.5) * 120; // horizontal drift px
-
-      node.animate([
-        { transform: `translate3d(0, 0, 0) rotate(0deg) scale(0.9)`, opacity: node.style.opacity },
-        { transform: `translate3d(${drift}px, -${travel}px, 0) rotate(${Math.random()*40-20}deg) scale(1)`, opacity: 1 },
-        { transform: `translate3d(${drift*1.4}px, -${travel+100}px, 0) rotate(${Math.random()*60-30}deg) scale(0.6)`, opacity: 0 }
-      ], {
-        duration: 4500 + Math.random() * 3500,
-        easing: 'cubic-bezier(.2,.7,.2,1)'
-      });
-
-      // remove after animation
-      setTimeout(()=> node.remove(), 9000);
-    }
-
-    // spawn periodically
-    const heartInterval = setInterval(spawnHeart, 650);
-    // spawn a few at start
-    for (let i=0;i<6;i++){ setTimeout(spawnHeart, i*120); }
-
-    // ====== Modal reveal + button logic ======
-    const revealBtn = document.getElementById('revealBtn');
-    const modal = document.getElementById('finalModal');
-    const closeModal = document.getElementById('closeModal');
-
-    function showModal(){
-      modal.classList.add('show');
-      modal.setAttribute('aria-hidden','false');
-      // bigger celebratory hearts on reveal
-      for (let i=0;i<12;i++){ setTimeout(spawnHeart, i*80); }
-    }
-    function hideModal(){
-      modal.classList.remove('show');
-      modal.setAttribute('aria-hidden','true');
-    }
-
-    revealBtn.addEventListener('click', showModal);
-    closeModal.addEventListener('click', hideModal);
-    // close modal when clicking outside card
-    modal.addEventListener('click', (e)=>{
-      if (e.target === modal) hideModal();
+    revealBtn.addEventListener("click", () => {
+      loveMessage.style.display="block";
+      revealBtn.style.display="none";
     });
 
-    // ====== Music control ======
-    const audio = document.getElementById('bgAudio');
-    const playBtn = document.getElementById('playBtn');
-    const muteBtn = document.getElementById('muteBtn');
+    yesBtn.addEventListener("click", () => {
+      resultMessage.innerHTML = `
+        💖 You just made my world complete, Hasi 💖<br>
+        I promise to love you every day of my life 💍
+        <div class="ring">💍</div>
+      `;
+      resultMessage.style.display="block";
+      createHearts();
+    });
 
-    let isPlaying = false;
-    let isMuted = false;
+    noBtn.addEventListener("mouseover", () => {
+      const x = Math.floor(Math.random() * 200) - 100;
+      const y = Math.floor(Math.random() * 200) - 100;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    });
 
-    // Try to autoplay (may be blocked)
-    function tryAutoplay(){
-      audio.volume = 0.6;
-      audio.play().then(()=> {
-        isPlaying = true;
-        playBtn.textContent = 'Pause Music ⏸';
-      }).catch(()=> {
-        // autoplay blocked — show that user must press play
-        isPlaying = false;
-        playBtn.textContent = 'Play Music ▶';
-      });
-    }
-    // Attempt a gentle autoplay after small delay
-    setTimeout(tryAutoplay, 800);
-
-    playBtn.addEventListener('click', ()=>{
-      if (!isPlaying){
-        audio.play().then(()=> {
-          isPlaying = true;
-          playBtn.textContent = 'Pause Music ⏸';
-        }).catch(()=>{
-          alert('If music doesn\'t start, please check your browser autoplay settings or add a file named "guitar.mp3" to the site root.');
-        });
-      } else {
-        audio.pause();
-        isPlaying = false;
-        playBtn.textContent = 'Play Music ▶';
+    function createHearts(){
+      for(let i=0;i<20;i++){
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.textContent="💗";
+        heart.style.left = Math.random()*100 + "vw";
+        heart.style.top = "80vh";
+        heart.style.animationDuration = (Math.random()*2 + 2) + "s";
+        document.body.appendChild(heart);
+        setTimeout(()=>{heart.remove();},3000);
       }
-    });
+    }
 
-    muteBtn.addEventListener('click', ()=>{
-      isMuted = !isMuted;
-      audio.muted = isMuted;
-      muteBtn.textContent = isMuted ? 'Unmute' : 'Mute';
-    });
+    // Music controls
+    const bgAudio = document.getElementById("bgAudio");
+    const playBtn = document.getElementById("playBtn");
+    const muteBtn = document.getElementById("muteBtn");
 
-    // Accessibility: allow Enter key on reveal button
-    revealBtn.addEventListener('keyup', (e)=>{ if(e.key==='Enter') showModal(); });
-
-    // small focus/enter animation for name
-    const nameLine = document.querySelector('.name-line');
-    nameLine.addEventListener('click', ()=> {
-      nameLine.animate([
-        { transform: 'scale(1)', color: 'var(--accent)' },
-        { transform: 'scale(1.08)', color: '#ffd1e0' },
-        { transform: 'scale(1)', color: 'var(--accent)' }
-      ], { duration: 580, easing: 'ease-out' });
-    });
-
-    // Helpful note for user: If you don't have an audio file, add an MP3 named "guitar.mp3" next to index.html in your GitHub repo.
-    // Optionally you can change the <source src="..."> to your hosted mp3 URL if you prefer.
+    playBtn.addEventListener("click", ()=>{ bgAudio.play(); });
+    muteBtn.addEventListener("click", ()=>{ bgAudio.pause(); });
   </script>
 </body>
 </html>
