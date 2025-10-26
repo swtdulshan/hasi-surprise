@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hasi — A Surprise</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#06040a;
+      --accent:#ff5c8a;   /* romantic pink */
+      --muted:#bdb6c4;
+      --glass: rgba(255,255,255,0.04);
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(255,92,138,0.06), transparent),
+                  radial-gradient(800px 400px at 90% 90%, rgba(140,84,255,0.04), transparent),
+                  var(--bg);
+      color: #efe9f2;
+      font-family: 'Quicksand', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .card{
+      width:100%;
+      max-width:920px;
+      min-height:560px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:18px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      position:relative;
+      overflow:hidden;
+      padding:40px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:20px;
+    }
+
+    /* top glow / stars */
+    .scene {
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+    }
+
+    /* floating hearts container */
+    .hearts {
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      z-index:2;
+      pointer-events:none;
+    }
+
+    /* center intro text */
+    .intro{
+      text-align:center;
+      z-index:5;
+      transform:translateY(-10px);
+    }
+    .intro h1{
+      margin:0;
+      font-family: 'Playfair Display', serif;
+      font-weight:700;
+      font-size:clamp(32px,6vw,54px);
+      letter-spacing:1px;
+      color: #fff;
+      text-shadow: 0 6px 30px rgba(0,0,0,0.6);
+      opacity:0;
+      transform: translateY(12px);
+      animation:fadeInUp 1s ease forwards 0.5s;
+    }
+    .intro p{
+      margin:8px 0 0 0;
+      color:var(--muted);
+      font-size:clamp(14px,2.2vw,18px);
+      opacity:0;
+      transform: translateY(8px);
+      animation:fadeInUp 1s ease forwards 0.9s;
+    }
+
+    @keyframes fadeInUp{
+      to{ opacity:1; transform:none; }
+    }
+
+    /* name animated line */
+    .name-line{
+      margin-top:14px;
+      font-size:clamp(20px,3vw,28px);
+      color:var(--accent);
+      font-weight:700;
+      display:inline-block;
+      opacity:0;
+      transform: translateY(8px) scale(0.98);
+      animation:popIn 1s ease forwards 1.3s;
+      text-shadow: 0 6px 18px rgba(255,92,138,0.06);
+      font-family: 'Playfair Display', serif;
+    }
+    @keyframes popIn{
+      to{ opacity:1; transform:none; }
+    }
+
+    /* reveal button */
+    .reveal-btn{
+      margin-top:18px;
+      z-index:6;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.06);
+      padding:14px 26px;
+      border-radius:999px;
+      color: #fff;
+      cursor:pointer;
+      font-weight:600;
+      letter-spacing:0.6px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      transition: transform .18s ease, box-shadow .18s ease;
+      backdrop-filter: blur(6px);
+    }
+    .reveal-btn:hover{ transform:translateY(-4px) scale(1.01); box-shadow:0 18px 40px rgba(0,0,0,0.6); }
+
+    /* final message modal */
+    .modal{
+      position: absolute;
+      z-index:9;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+      backdrop-filter: blur(6px);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .35s ease;
+    }
+    .modal.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .modal-card{
+      width:100%;
+      max-width:760px;
+      margin:24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:16px;
+      padding:32px;
+      text-align:center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+      position:relative;
+    }
+    .modal-card h2{
+      margin:0;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px,3.4vw,40px);
+      color: #fff;
+    }
+    .modal-card p{
+      color:var(--muted);
+      margin:14px 0 18px 0;
+      font-size:18px;
+    }
+    .modal-card .big{
+      display:block;
+      margin-top:8px;
+      font-size:clamp(30px,4.2vw,44px);
+      color:var(--accent);
+      font-weight:700;
+    }
+    .close-btn{
+      margin-top:16px;
+      padding:10px 18px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.06);
+      background:transparent;
+      color:#fff;
+      cursor:pointer;
+    }
+
+    /* music control */
+    .music-control{
+      position:absolute;
+      right:18px;
+      top:18px;
+      z-index:8;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      font-size:14px;
+    }
+    .music-btn{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      color:#fff;
+      cursor:pointer;
+    }
+
+    /* little footer */
+    .footer{
+      position:absolute;
+      bottom:14px;
+      left:18px;
+      font-size:12px;
+      color:rgba(255,255,255,0.5);
+      z-index:6;
+    }
+
+    /* hearts shapes (CSS used as a sprite fallback) */
+    .heart {
+      position:absolute;
+      width:18px;
+      height:18px;
+      transform:translate(-50%,-50%) scale(0.9);
+      pointer-events:none;
+      opacity:0.95;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35));
+    }
+    .heart svg{display:block;}
+
+    /* responsive */
+    @media (max-width:520px){
+      .card{ padding:20px; min-height:520px; }
+      .music-control{ top:12px; right:12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="main" aria-labelledby="title">
+    <div class="scene" aria-hidden="true">
+      <!-- subtle decorative gradient circles or stars could go here -->
+    </div>
+
+    <div class="hearts" id="hearts"></div>
+
+    <div class="music-control" aria-hidden="false">
+      <button id="playBtn" class="music-btn" title="Play music">Play Music ▶</button>
+      <button id="muteBtn" class="music-btn" title="Mute / Unmute">Mute</button>
+    </div>
+
+    <div class="intro" id="intro">
+      <h1 id="title">Hi <span class="name-line">Hasi</span>…</h1>
+      <p>I made this just for you. There's something I really want to say.</p>
+      <button class="reveal-btn" id="revealBtn" aria-controls="finalModal">Click to see my love message</button>
+    </div>
+
+    <div class="footer">Made with ❤️ — a surprise for Hasi</div>
+
+    <!-- Modal / final message -->
+    <div class="modal" id="finalModal" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal-card">
+        <h2>Hasi,</h2>
+        <p>From the deepest corner of my heart:</p>
+        <span class="big">“Hasi, I love you with all my heart. Will you be mine forever?”</span>
+
+        <div style="margin-top:18px;">
+          <button class="close-btn" id="closeModal">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden audio element. Replace guitar.mp3 with your audio file in the repo root if you have one -->
+    <audio id="bgAudio" loop preload="auto">
+      <source src="guitar.mp3" type="audio/mpeg">
+      <!-- If you don't add an audio file, the control buttons will still work but nothing will play -->
+    </audio>
+  </div>
+
+  <!-- Heart SVG template (used by JS) -->
+  <template id="heartTemplate">
+    <div class="heart">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 21s-7.5-4.35-9.5-7.5C-0.5 8.5 4 3 8.5 5.5 10.8 6.9 12 9 12 9s1.2-2.1 3.5-3.5C20 3 24.5 8.5 21.5 13.5 19.5 16.65 12 21 12 21z" fill="url(#g)"/>
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ff8fb0"/>
+            <stop offset="1" stop-color="#ff4a7a"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </template>
+
+  <script>
+    // ====== Floating hearts generator ======
+    const heartsContainer = document.getElementById('hearts');
+    const heartTpl = document.getElementById('heartTemplate').content;
+
+    function spawnHeart() {
+      const node = heartTpl.cloneNode(true).querySelector('.heart');
+      const startX = Math.random() * 100; // vw
+      const size = 12 + Math.random() * 26; // px
+      node.style.left = startX + 'vw';
+      node.style.bottom = '-40px';
+      node.style.width = size + 'px';
+      node.style.height = size + 'px';
+      node.style.opacity = 0.9 - Math.random()*0.6;
+      heartsContainer.appendChild(node);
+
+      // animation using Web Animations API
+      const travel = 550 + Math.random()*450; // px travel
+      const drift = (Math.random() - 0.5) * 120; // horizontal drift px
+
+      node.animate([
+        { transform: `translate3d(0, 0, 0) rotate(0deg) scale(0.9)`, opacity: node.style.opacity },
+        { transform: `translate3d(${drift}px, -${travel}px, 0) rotate(${Math.random()*40-20}deg) scale(1)`, opacity: 1 },
+        { transform: `translate3d(${drift*1.4}px, -${travel+100}px, 0) rotate(${Math.random()*60-30}deg) scale(0.6)`, opacity: 0 }
+      ], {
+        duration: 4500 + Math.random() * 3500,
+        easing: 'cubic-bezier(.2,.7,.2,1)'
+      });
+
+      // remove after animation
+      setTimeout(()=> node.remove(), 9000);
+    }
+
+    // spawn periodically
+    const heartInterval = setInterval(spawnHeart, 650);
+    // spawn a few at start
+    for (let i=0;i<6;i++){ setTimeout(spawnHeart, i*120); }
+
+    // ====== Modal reveal + button logic ======
+    const revealBtn = document.getElementById('revealBtn');
+    const modal = document.getElementById('finalModal');
+    const closeModal = document.getElementById('closeModal');
+
+    function showModal(){
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden','false');
+      // bigger celebratory hearts on reveal
+      for (let i=0;i<12;i++){ setTimeout(spawnHeart, i*80); }
+    }
+    function hideModal(){
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    revealBtn.addEventListener('click', showModal);
+    closeModal.addEventListener('click', hideModal);
+    // close modal when clicking outside card
+    modal.addEventListener('click', (e)=>{
+      if (e.target === modal) hideModal();
+    });
+
+    // ====== Music control ======
+    const audio = document.getElementById('bgAudio');
+    const playBtn = document.getElementById('playBtn');
+    const muteBtn = document.getElementById('muteBtn');
+
+    let isPlaying = false;
+    let isMuted = false;
+
+    // Try to autoplay (may be blocked)
+    function tryAutoplay(){
+      audio.volume = 0.6;
+      audio.play().then(()=> {
+        isPlaying = true;
+        playBtn.textContent = 'Pause Music ⏸';
+      }).catch(()=> {
+        // autoplay blocked — show that user must press play
+        isPlaying = false;
+        playBtn.textContent = 'Play Music ▶';
+      });
+    }
+    // Attempt a gentle autoplay after small delay
+    setTimeout(tryAutoplay, 800);
+
+    playBtn.addEventListener('click', ()=>{
+      if (!isPlaying){
+        audio.play().then(()=> {
+          isPlaying = true;
+          playBtn.textContent = 'Pause Music ⏸';
+        }).catch(()=>{
+          alert('If music doesn\'t start, please check your browser autoplay settings or add a file named "guitar.mp3" to the site root.');
+        });
+      } else {
+        audio.pause();
+        isPlaying = false;
+        playBtn.textContent = 'Play Music ▶';
+      }
+    });
+
+    muteBtn.addEventListener('click', ()=>{
+      isMuted = !isMuted;
+      audio.muted = isMuted;
+      muteBtn.textContent = isMuted ? 'Unmute' : 'Mute';
+    });
+
+    // Accessibility: allow Enter key on reveal button
+    revealBtn.addEventListener('keyup', (e)=>{ if(e.key==='Enter') showModal(); });
+
+    // small focus/enter animation for name
+    const nameLine = document.querySelector('.name-line');
+    nameLine.addEventListener('click', ()=> {
+      nameLine.animate([
+        { transform: 'scale(1)', color: 'var(--accent)' },
+        { transform: 'scale(1.08)', color: '#ffd1e0' },
+        { transform: 'scale(1)', color: 'var(--accent)' }
+      ], { duration: 580, easing: 'ease-out' });
+    });
+
+    // Helpful note for user: If you don't have an audio file, add an MP3 named "guitar.mp3" next to index.html in your GitHub repo.
+    // Optionally you can change the <source src="..."> to your hosted mp3 URL if you prefer.
+  </script>
+</body>
+</html>
